@@ -14,7 +14,7 @@
                :let [[_ min-str max-str letter password] (parse x)
                      min (Integer/parseInt min-str)
                      max (Integer/parseInt max-str)
-                     cnt ((frequencies password) (first (seq letter)))]
+                     cnt ((frequencies password) (first letter))]
                :when (and cnt 
                           (>= cnt min)
                           (<= cnt max))]
@@ -25,7 +25,7 @@
   [input]
   (count (for [x input
                :let [[_ min-str max-str letter-str password] (parse x)
-                     letter (first (seq letter-str))
+                     letter (first letter-str)
                      min (Integer/parseInt min-str)
                      max (Integer/parseInt max-str)
                      loc1? (= (nth password (- min 1)) letter)
