@@ -53,12 +53,44 @@ F11")
 
 ; ************ Part 2 ************************
 
+
+    ;; Action N means to move the waypoint north by the given value.
+    ;; Action S means to move the waypoint south by the given value.
+    ;; Action E means to move the waypoint east by the given value.
+    ;; Action W means to move the waypoint west by the given value.
+    ;; Action L means to rotate the waypoint around the ship left (counter-clockwise) the given number of degrees.
+    ;; Action R means to rotate the waypoint around the ship right (clockwise) the given number of degrees.
+    ;; Action F means to move forward to the waypoint a number of times equal to the given value.
+
+
 (defn part-2
   "Day 12 Part 2"
   [input]
-  (let [waypoint {:E 10 :N 1}
-        facing "E"])
-  (doall (for [[action value] (seperate input)]
-           )))
+  (let [waypoint (atom {:E 10 :N 1})
+        n-s (atom 0) 
+        e-w (atom 0)]
+    (doall (for [[action value] (seperate input)]
+             (case action
+               "N" (swap! waypoint update-in [:N] #(+ % value))
+               "S" (swap! waypoint update-in [:N] #(- % value))
+               "E" (swap! waypoint update-in [:E] #(+ % value))
+               "W" (swap! waypoint update-in [:E] #(- % value))
+               "L" (let [{:keys [E N]} @waypoint] 
+                     (case value
+                       90 (reset! waypoint {:E (* -1 N) :N E})
+                       180 (reset! waypoint {:E (* -1 E) :N (* -1 N)})
+                       270 (reset! waypoint {:E N :N (* -1 E)})))
+               "R" (let [{:keys [E N]} @waypoint]
+                     (case value
+                       90 (reset! waypoint {:E N :N (* -1 E)})
+                       180 (reset! waypoint {:E (* -1 E) :N (* -1 N)})
+                       270 (reset! waypoint {:E (* -1 N) :N E})))
+               "F" (let [{:keys [E N]} @waypoint] 
+                     (swap! e-w #(+ % (* value E)))
+                     (swap! n-s #(+ % (* value N)))))))
+    (+ (Math/abs @n-s) (Math/abs @e-w))))
 
-;10 units east and 1 unit north
+(comment
+(part-2 example)
+(part-2 file)
+)
