@@ -84,5 +84,5 @@ mem[26] = 1")
 
 (comment
 (part-2 example2)
-(print (part-2 file))
+(part-2 file)
 )
